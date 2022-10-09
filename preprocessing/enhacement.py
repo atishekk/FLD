@@ -5,6 +5,7 @@ import math
 
 class ImageEnhancer:
     def __init__(self) -> None:
+        """Initialise hyperparameters for the algorithm"""
         self.ridge_block_size = 16
         self.ridge_segment_thresh = 0.1
         self.gradient_sigma = 1
@@ -112,20 +113,24 @@ class ImageEnhancer:
         """
         rows, cols = block_norm.shape
 
+        # calculate the orientation angle for the block
         cos_orient = np.mean(np.cos(2 * block_orient))
         sin_orient = np.mean(np.sin(2 * block_orient))
         orient = math.atan2(sin_orient, cos_orient) / 2
-
-
+        
+        # rotating the image block so that ridge orientation is 
+        # vertical
         rotated_img = scipy.ndimage.rotate(block_norm, orient / np.pi * 100 + 90, 
                 axes=(1, 0), reshape=False, order=3, mode='nearest')
 
+        # Crop out the invalid region, for better projection
         crop_size = int(np.fix(rows / np.sqrt(2)))
         offset = int(np.fix((rows - crop_size) / 2))
         rotated_img = rotated_img[offset:offset + crop_size][:, offset:offset+crop_size]
 
         proj = np.sum(rotated_img, axis=0)
-        dilation = scipy.ndimage.grey_dilation(proj, self.freq_window_size, structure=np.ones(self.freq_block_size))
+        dilation = scipy.ndimage.grey_dilation(proj, self.freq_window_size, 
+                structure=np.ones(self.freq_block_size))
 
         temp = np.abs(dilation - proj)
 
@@ -197,7 +202,8 @@ class ImageEnhancer:
 
         sze = np.intc(np.round(3 * np.max([sigmax, sigmay])))
 
-        x, y = np.meshgrid(np.linspace(-sze, sze, (2 * sze + 1)), np.linspace(-sze, sze, (2 * sze + 1)))
+        x, y = np.meshgrid(np.linspace(-sze, sze, (2 * sze + 1)), 
+                np.linspace(-sze, sze, (2 * sze + 1)))
 
         reffilter = np.exp(-(((np.power(x, 2)) / (sigmax * sigmax) + (np.power(y, 2)) / (sigmay * sigmay)))) * np.cos(2 * np.pi * unfreq[0] * x)
 
@@ -247,9 +253,6 @@ class ImageEnhancer:
             new_img[r][c] = np.sum(img_block * gabor_filter[int(orientindex[r][c]) - 1])
 
         self._enhanced = new_img < self.ridge_filter_thresh
-
-
-
 
 
     def enhance(self, img: np.ndarray, resize: tuple[int, int] | None = None) -> np.ndarray:

@@ -162,3 +162,4 @@ cython_debug/
 # Dataset
 data/LivDet2015.zip
 data/LivDet2015/
+data/

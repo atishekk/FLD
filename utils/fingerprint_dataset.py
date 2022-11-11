@@ -3,9 +3,10 @@ import torch.utils.data as data
 from PIL import Image
 import numpy as np
 import pandas as pd
+from typing import Tuple
 
 class FingerprintDataset(data.Dataset):
-    def __init__(self, data: pd.DataFrame, size: tuple[int, int]) -> None:
+    def __init__(self, data: pd.DataFrame, size: Tuple[int, int]) -> None:
         super().__init__()
         self.data = data
         self.size = size

@@ -2,6 +2,7 @@ import numpy as np
 import scipy
 import cv2 as cv
 import math
+from typing import Tuple, Union
 
 class ImageEnhancer:
     def __init__(self) -> None:
@@ -255,7 +256,7 @@ class ImageEnhancer:
         self._enhanced = new_img < self.ridge_filter_thresh
 
 
-    def enhance(self, img: np.ndarray, resize: tuple[int, int] | None = None) -> np.ndarray:
+    def enhance(self, img: np.ndarray, resize: Union[Tuple[int, int], None] = None) -> np.ndarray:
         """
         Enhance a fingerprint image
         """

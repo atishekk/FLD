@@ -3,6 +3,7 @@ import numpy as np
 import math
 from skimage.morphology import convex_hull_image, erosion, square
 from skimage.measure import label, regionprops
+import cv2 as cv
 
 class MinutiaeFeature:
     def __init__(self, X, Y, orientation, feature_type) -> None:
@@ -149,5 +150,12 @@ class FeatureExtractor:
         
         return DispImg
 
+    def get_sift_descriptor(self, img):
+        FeatureTerm, FeatureBif = self.extract_features(img)
+        key_points = [cv.KeyPoint(fe.Y, fe.X, 3, fe.orientation[0]) for fe in FeatureTerm]
+        key_points.extend([cv.KeyPoint(fe.Y, fe.X, 5, fe.orientation[0]) for fe in FeatureBif])
+        sift = cv.SIFT_create()
+        return sift.compute(img, key_points)
+        
 
 

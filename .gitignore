@@ -163,3 +163,5 @@ cython_debug/
 data/LivDet2015.zip
 data/LivDet2015/
 data/
+
+*.pth

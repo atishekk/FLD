@@ -140,12 +140,12 @@ class FeatureExtractor:
 
         for idx, curr_minutiae in enumerate(FeatureTerm):
             row, col = curr_minutiae.X, curr_minutiae.Y
-            (rr, cc) = skimage.draw.circle_perimeter(row, col, 3)
+            (rr, cc) = skimage.draw.disk((row, col), 5)
             skimage.draw.set_color(DispImg, (rr, cc), (0, 0, 255))
 
         for idx, curr_minutiae in enumerate(FeatureBif):
             row, col = curr_minutiae.X, curr_minutiae.Y
-            (rr, cc) = skimage.draw.circle_perimeter(row, col, 3)
+            (rr, cc) = skimage.draw.disk((row, col), 5)
             skimage.draw.set_color(DispImg, (rr, cc), (255, 0, 0))
         
         return DispImg
